@@ -6,7 +6,7 @@ To speed up, please use vectorized version.
 
 import numpy as np
 import matplotlib.pyplot as plt
-from benchmark import *
+from problems import *
 
 
 class ParticleSwarm():

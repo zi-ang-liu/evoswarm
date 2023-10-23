@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from mpl_toolkits import mplot3d
-from benchmark import *
+from problems import *
 
 
 if __name__ == '__main__':
