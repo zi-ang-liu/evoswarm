@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from problems import TSP
 
 class GeneticAlgorithm:
-    def __init__(self, problem, n_gen=2000, n_pop=20, mutation_rate=0.01, crossover_rate=0.8, selection_method='roulette', crossover_method='order_crossover', mutate_method='swap', elitism=True):
+    def __init__(self, problem, n_gen=5000, n_pop=20, mutation_rate=0.01, crossover_rate=0.8, selection_method='roulette', crossover_method='order_crossover', mutate_method='swap', elitism=True):
         '''
         initialize genetic algorithm
         '''
@@ -147,6 +147,18 @@ class GeneticAlgorithm:
             # store best fitness
             best_fitness_array[gen] = best_fitness
 
+            # save figure for the best individual every 10 generations
+            # if gen % 50 == 0:
+            #     x = best_individual
+            #     plt.figure()
+            #     plt.scatter(coordinates[:, 0], coordinates[:, 1])
+            #     for i in range(n_cities):
+            #         plt.text(coordinates[i, 0], coordinates[i, 1], str(i))
+            #     for i in range(n_cities):
+            #         plt.plot([coordinates[x[i-1], 0], coordinates[x[i], 0]], [coordinates[x[i-1], 1], coordinates[x[i], 1]], 'r')
+            #     plt.savefig(f'figure_{gen}.png')
+            #     plt.close()
+
         return best_individual, best_fitness, best_fitness_array
 
 if __name__ == '__main__':
@@ -171,11 +183,19 @@ if __name__ == '__main__':
     plt.show()
 
     # plot solution
-    x = best_individual
-    plt.figure()
-    plt.scatter(coordinates[:, 0], coordinates[:, 1])
-    for i in range(n_cities):
-        plt.text(coordinates[i, 0], coordinates[i, 1], str(i))
-    for i in range(n_cities):
-        plt.plot([coordinates[x[i-1], 0], coordinates[x[i], 0]], [coordinates[x[i-1], 1], coordinates[x[i], 1]], 'r')
-    plt.show()
+    # x = best_individual
+    # plt.figure()
+    # plt.scatter(coordinates[:, 0], coordinates[:, 1])
+    # for i in range(n_cities):
+    #     plt.text(coordinates[i, 0], coordinates[i, 1], str(i))
+    # for i in range(n_cities):
+    #     plt.plot([coordinates[x[i-1], 0], coordinates[x[i], 0]], [coordinates[x[i-1], 1], coordinates[x[i], 1]], 'r')
+    # plt.show()
+
+    # create gif, loop inifinitely
+    # import imageio
+    # images = []
+    # for i in range(0, 5000, 50):
+    #     images.append(imageio.imread(f'figure_{i}.png'))
+    # imageio.mimsave('tsp.gif', images, duration=0.1)
+
