@@ -1,16 +1,28 @@
-'''
+"""
 Implementation of the genetic algorithm for sequence optimization problems.
-'''
+"""
 
 import numpy as np
 import matplotlib.pyplot as plt
 from problems import TSP
 
+
 class GeneticAlgorithm:
-    def __init__(self, problem, n_gen=5000, n_pop=20, mutation_rate=0.01, crossover_rate=0.8, selection_method='roulette', crossover_method='order_crossover', mutate_method='swap', elitism=True):
-        '''
+    def __init__(
+        self,
+        problem,
+        n_gen=5000,
+        n_pop=20,
+        mutation_rate=0.01,
+        crossover_rate=0.8,
+        selection_method="roulette",
+        crossover_method="order_crossover",
+        mutate_method="swap",
+        elitism=True,
+    ):
+        """
         initialize genetic algorithm
-        '''
+        """
         self.problem = problem
         self.n_gen = n_gen
         self.n_pop = n_pop
@@ -22,9 +34,9 @@ class GeneticAlgorithm:
         self.elitism = elitism
 
     def select_parents_roulette(self, population, fitness):
-        '''
+        """
         select parents using roulette wheel selection for minimization problems
-        '''
+        """
         # compute probabilities for minimization problem, the smaller the fitness, the higher the probability
         fitness = np.max(fitness) - fitness
         probabilities = fitness / np.sum(fitness)
@@ -36,23 +48,29 @@ class GeneticAlgorithm:
         return parents
 
     def select_parents(self, population, fitness, selection_method):
-        if selection_method == 'roulette':
+        if selection_method == "roulette":
             return self.select_parents_roulette(population, fitness)
 
     def order_crossover(self, parents):
-        '''
+        """
         order crossover
-        '''
+        """
         # generate crossover point
-        crossover_point = np.sort(np.random.choice(self.problem.n_elements, 2, replace=False))
+        crossover_point = np.sort(
+            np.random.choice(self.problem.n_elements, 2, replace=False)
+        )
 
         # initialize offspring
-        offspring = -1*np.ones((2, self.problem.n_elements), dtype=int)
+        offspring = -1 * np.ones((2, self.problem.n_elements), dtype=int)
 
         for i in range(2):
-            offspring[i, crossover_point[0]:crossover_point[1]] = parents[i, crossover_point[0]:crossover_point[1]]
+            offspring[i, crossover_point[0] : crossover_point[1]] = parents[
+                i, crossover_point[0] : crossover_point[1]
+            ]
             # Copy the remaining genetic material from the second parent to the first offspring
-            remaining = np.setdiff1d(parents[1-i], offspring[i, crossover_point[0]:crossover_point[1]])
+            remaining = np.setdiff1d(
+                parents[1 - i], offspring[i, crossover_point[0] : crossover_point[1]]
+            )
             for j in range(self.problem.n_elements):
                 if offspring[i, j] == -1:
                     offspring[i, j] = remaining[0]
@@ -61,15 +79,17 @@ class GeneticAlgorithm:
         return offspring
 
     def crossover(self, parents):
-        if self.crossover_method == 'order_crossover':
+        if self.crossover_method == "order_crossover":
             return self.order_crossover(parents)
-        
+
     def mutate_swap(self, children):
-        '''
+        """
         swap two elements in the child
-        '''
+        """
         # generate mutation point
-        mutation_point = np.sort(np.random.choice(self.problem.n_elements, 2, replace=False))
+        mutation_point = np.sort(
+            np.random.choice(self.problem.n_elements, 2, replace=False)
+        )
 
         # swap elements
         children[:, mutation_point] = children[:, mutation_point[::-1]]
@@ -77,9 +97,9 @@ class GeneticAlgorithm:
         return children
 
     def mutate(self, children):
-        if self.mutate_method == 'swap':
+        if self.mutate_method == "swap":
             return self.mutate_swap(children)
-        
+
     def optimize(self):
 
         # initialize population as random permutation of the sequence
@@ -88,7 +108,7 @@ class GeneticAlgorithm:
             population[i] = np.random.permutation(self.problem.n_elements)
 
         # initialize fitness array
-        fitness = np.ones(self.n_pop)*np.inf
+        fitness = np.ones(self.n_pop) * np.inf
         for i in range(self.n_pop):
             fitness[i] = self.problem.evaluate(population[i])
 
@@ -110,7 +130,9 @@ class GeneticAlgorithm:
             for i in range(0, self.n_pop, 2):
 
                 # select parents
-                parents = self.select_parents(population, fitness, self.selection_method)
+                parents = self.select_parents(
+                    population, fitness, self.selection_method
+                )
 
                 # crossover
                 children = self.crossover(parents)
@@ -125,11 +147,11 @@ class GeneticAlgorithm:
 
                 # update new population
                 new_population[i] = children[0]
-                new_population[i+1] = children[1]
+                new_population[i + 1] = children[1]
 
                 # update new fitness
                 new_fitness[i] = children_fitness[0]
-                new_fitness[i+1] = children_fitness[1]
+                new_fitness[i + 1] = children_fitness[1]
 
             # elitism
             if self.elitism:
@@ -161,12 +183,13 @@ class GeneticAlgorithm:
 
         return best_individual, best_fitness, best_fitness_array
 
-if __name__ == '__main__':
-    
+
+if __name__ == "__main__":
+
     # test TSP
     n_cities = 15
     coordinates = np.random.rand(n_cities, 2)
-    
+
     # compute distance matrix from coordinates
     distance_matrix = np.zeros((n_cities, n_cities))
     for i in range(n_cities):
@@ -198,4 +221,3 @@ if __name__ == '__main__':
     # for i in range(0, 5000, 50):
     #     images.append(imageio.imread(f'figure_{i}.png'))
     # imageio.mimsave('tsp.gif', images, duration=0.1)
-
